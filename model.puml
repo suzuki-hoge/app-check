@@ -1,0 +1,74 @@
+@startuml
+
+namespace uc {
+  namespace type_change {
+    namespace app_check {
+      class WebTypeChangeAppCheckPolicy {
+        web 用の checker を指定
+      }
+      class CallCenterTypeChangeAppCheckPolicy {
+        センター用の checker を指定
+      }
+      class CoreTypeChangeAppCheckPolicy {
+        チェック対象のエンティティを定義
+        評価順も定義
+      }
+      WebTypeChangeAppCheckPolicy --> CoreTypeChangeAppCheckPolicy
+      CallCenterTypeChangeAppCheckPolicy --> CoreTypeChangeAppCheckPolicy
+    }
+  }
+}
+
+object core {
+  identities and attributes...
+}
+
+namespace check {
+  namespace user {
+    class UserForCheck {
+      小さな checker 群
+    }
+    UserForCheck -r-> UserCheckError
+  }
+  namespace contract {
+    class ContractForCheck {
+      小さな checker 群
+    }
+    ContractForCheck -r-> ContractCheckError
+  }
+  namespace voice {
+    class VoiceForCheck {
+      小さな checker 群
+    }
+    VoiceForCheck -r-> VoiceCheckError
+  }
+  namespace date {
+    class DateForCheck {
+      小さな checker 群
+    }
+    DateForCheck -r-> DateCheckError
+  }
+  namespace core {
+    interface Checker
+    interface CheckError
+    Checker -d-> CheckError
+    Checker -r-> Unit
+
+    class ValidationUtil
+  }
+  check.user.UserCheckError -u-|> check.core.CheckError
+  check.contract.ContractCheckError -u-|> check.core.CheckError
+  check.voice.VoiceCheckError -u-|> check.core.CheckError
+  check.date.DateCheckError -u-|> check.core.CheckError
+}
+
+check.user.UserForCheck -d--> core
+check.contract.ContractForCheck -d--> core
+check.voice.VoiceForCheck -d--> core
+
+uc.type_change.app_check.WebTypeChangeAppCheckPolicy -u-> check.user.UserForCheck
+uc.type_change.app_check.WebTypeChangeAppCheckPolicy -u-> check.contract.ContractForCheck
+uc.type_change.app_check.WebTypeChangeAppCheckPolicy -u-> check.voice.VoiceForCheck
+uc.type_change.app_check.WebTypeChangeAppCheckPolicy -u-> check.date.DateForCheck
+
+@enduml
