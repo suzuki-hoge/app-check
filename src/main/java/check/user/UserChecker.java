@@ -20,33 +20,31 @@ import static javaslang.control.Validation.invalid;
 import static javaslang.control.Validation.valid;
 
 @Value
-public class UserForCheck {
+public class UserChecker {
     private final UserId id;
     private final Status status;
     private final Payment payment;
 
-    public static Validation<CheckError, Unit> checkStatus(UserForCheck own) {
-        System.out.println("UserForCheck#checkStatus evaluated");
+    public static Validation<CheckError, Unit> checkStatus(UserChecker own) {
         return own.status == USING ? valid(UNIT) : invalid(NOT_USING);
     }
 
-    public static Validation<CheckError, Unit> checkPayment(UserForCheck own) {
-        System.out.println("UserForCheck#checkPayment evaluated");
+    public static Validation<CheckError, Unit> checkPayment(UserChecker own) {
         return own.payment == CREDIT_CARD ? valid(UNIT) : invalid(NOT_CREDIT_CARD);
     }
 
     // fixtures
 
-    public static Lazy<UserForCheck> fValid = Lazy.of(
-            () -> new UserForCheck(
+    public static Lazy<UserChecker> fValid = Lazy.of(
+            () -> new UserChecker(
                     new UserId(1),
                     USING,
                     CREDIT_CARD
             )
     );
 
-    public static Lazy<UserForCheck> fInvalid = Lazy.of(
-            () -> new UserForCheck(
+    public static Lazy<UserChecker> fInvalid = Lazy.of(
+            () -> new UserChecker(
                     new UserId(1),
                     STOPPING,
                     BANK

@@ -13,20 +13,20 @@ import static javaslang.control.Validation.invalid;
 import static javaslang.control.Validation.valid;
 
 @Value
-public class DateForCheck {
+public class DateChecker {
     private final LocalDateTime now;
 
-    public static Validation<CheckError, Unit> checkTime(DateForCheck own) {
+    public static Validation<CheckError, Unit> checkTime(DateChecker own) {
         return 9 <= own.now.getHour() && own.now.getHour() <= 21 ? valid(UNIT) : invalid(OUTSIDE_OF_OPERATION_TIME);
     }
 
     // fixtures
 
-    public static DateForCheck fValid = new DateForCheck(
+    public static DateChecker fValid = new DateChecker(
             LocalDateTime.of(2019, 6, 28, 15, 0, 0)
     );
 
-    public static DateForCheck fInvalid = new DateForCheck(
+    public static DateChecker fInvalid = new DateChecker(
         LocalDateTime.of(2019, 6, 28, 23, 0, 0)
     );
 }

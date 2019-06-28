@@ -16,7 +16,7 @@ public class ValidationUtil {
 
     // for T
 
-    public static <T> Validation<List<CheckError>, Unit> checkAll(T t, List<Checker<T, CheckError>> checkers) {
+    public static <T> Validation<List<CheckError>, Unit> checkAll(T t, List<Checker<T>> checkers) {
         List<Validation<CheckError, Unit>> mappeds = checkers.map(checker -> checker.check(t));
 
         List<Validation<List<CheckError>, Unit>> wrappeds = mappeds.map(mapped -> mapped.bimap(List::of, identity()));
@@ -28,10 +28,10 @@ public class ValidationUtil {
 
     // for Option<T> or Lazy<T>
 
-    public static <T> Validation<List<CheckError>, Unit> checkAll(Value<T> valueT, List<Checker<T, CheckError>> checkers) {
-        List<Value<Validation<CheckError, Unit>>> mappeds = checkers.map(checker -> valueT.map(checker::check));
+    public static <T> Validation<List<CheckError>, Unit> checkAll(Value<T> valueT, List<Checker<T>> checkers) {
+        List<Validation<CheckError, Unit>> mappeds = checkers.flatMap(checker -> valueT.map(checker::check));
 
-        List<Validation<List<CheckError>, Unit>> wrappeds = mappeds.flatMap(mapped -> mapped.map(v -> v.bimap(List::of, identity())));
+        List<Validation<List<CheckError>, Unit>> wrappeds = mappeds.map(mapped -> mapped.bimap(List::of, identity()));
 
         Validation<List<CheckError>, Seq<Unit>> sequenced = sequence(wrappeds);
 
@@ -40,7 +40,7 @@ public class ValidationUtil {
 
     // for Lazy<Option<T>>
 
-    public static <T> Validation<List<CheckError>, Unit> checkAll(Lazy<Option<T>> valueValueT, List<Checker<T, CheckError>> checkers) {
+    public static <T> Validation<List<CheckError>, Unit> checkAll(Lazy<Option<T>> valueValueT, List<Checker<T>> checkers) {
         List<Value<Validation<CheckError, Unit>>> mappeds = checkers.flatMap(checker -> valueValueT.map(valueT -> valueT.map(checker::check)));
 
         List<Validation<List<CheckError>, Unit>> wrappeds = mappeds.flatMap(mapped -> mapped.map(v -> v.bimap(List::of, identity())));

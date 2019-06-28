@@ -18,28 +18,28 @@ import static javaslang.control.Validation.invalid;
 import static javaslang.control.Validation.valid;
 
 @Value
-public class ContractForCheck {
+public class ContractChecker {
     private final ContractId id;
     private final Type type;
     private final Option<OptionId> oid;
 
-    public static Validation<CheckError, Unit> checkType(ContractForCheck own) {
+    public static Validation<CheckError, Unit> checkType(ContractChecker own) {
         return own.type == INDIVIDUAL ? valid(UNIT) : invalid(NOT_INDIVIDUAL);
     }
 
-    public static Validation<CheckError, Unit> checkOption(ContractForCheck own) {
+    public static Validation<CheckError, Unit> checkOption(ContractChecker own) {
         return own.oid.isEmpty() ? valid(UNIT) : invalid(SOME_OPTIONS);
     }
 
     // fixtures
 
-    public static ContractForCheck fValid = new ContractForCheck(
+    public static ContractChecker fValid = new ContractChecker(
             new ContractId(1),
             INDIVIDUAL,
             Option.none()
     );
 
-    public static ContractForCheck fInvalid = new ContractForCheck(
+    public static ContractChecker fInvalid = new ContractChecker(
             new ContractId(1),
             CORPORATION,
             Option.some(new OptionId(1))
